@@ -23,6 +23,11 @@ import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
 import android.app.ActivityManager;
 import android.util.DisplayMetrics;
+import android.text.TextUtils;
+
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -36,8 +41,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.lang.Runtime;
 import java.net.NetworkInterface;
+import java.io.IOException;
 
 import javax.annotation.Nullable;
 
@@ -45,12 +56,21 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
 
   ReactApplicationContext reactContext;
 
+  Executor mExecutor;
+
   WifiInfo wifiInfo;
 
   public RNDeviceModule(ReactApplicationContext reactContext) {
     super(reactContext);
 
     this.reactContext = reactContext;
+
+    mExecutor = Executors.newFixedThreadPool(2, new ThreadFactory() {
+      @Override
+      public Thread newThread(Runnable r) {
+          return new Thread(r, "bodyInfo");
+      }
+    });
   }
 
   @Override
@@ -206,6 +226,27 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
     int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
     float batteryLevel = level / (float) scale;
     p.resolve(batteryLevel);
+  }
+
+  @ReactMethod
+  public void getSafeAndroidAdId(final Promise p) {
+    mExecutor.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          AdvertisingIdClient.Info info = AdvertisingIdClient.getAdvertisingIdInfo(reactContext.getApplicationContext());
+          String advertisingId = info.getId();
+          if (!TextUtils.isEmpty(advertisingId)) {
+            p.resolve(advertisingId);
+            return;
+          }
+        } catch (GooglePlayServicesNotAvailableException
+                | GooglePlayServicesRepairableException
+                | IOException e) {
+        }
+        p.resolve(UUID.randomUUID().toString());
+      }
+    });
   }
 
   public String getInstallReferrer() {

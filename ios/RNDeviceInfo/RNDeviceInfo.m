@@ -314,4 +314,9 @@ RCT_EXPORT_METHOD(getBatteryLevel:(RCTPromiseResolveBlock)resolve rejecter:(RCTP
     resolve(@(batteryLevel));
 }
 
+RCT_EXPORT_METHOD(getSafeAndroidAdId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+  resolve(@"");
+}
+
 @end

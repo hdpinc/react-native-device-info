@@ -121,4 +121,7 @@ module.exports = {
   getBatteryLevel: function() {
     return RNDeviceInfo.getBatteryLevel();
   },
+  getSafeAndroidAdId: function() {
+    return RNDeviceInfo.getSafeAndroidAdId();
+  }
 };
