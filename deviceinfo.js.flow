@@ -27,6 +27,7 @@ declare module.exports: {
   isPinOrFingerprintSet: () => (
     cb: (isPinOrFingerprintSet: boolean) => void
   ) => void,
+  hasNotch: () => boolean,
   getFirstInstallTime: () => number,
   getLastUpdateTime: () => number,
   getSerialNumber: () => string,
@@ -41,4 +42,5 @@ declare module.exports: {
   getFreeDiskStorage: () => number,
   getBatteryLevel: () => Promise<number>,
   getSafeAndroidAdId: () => Promise<string>,
+  isLandscape: () => boolean,
 };
