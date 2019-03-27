@@ -30,6 +30,7 @@ dependencies {
 
     implementation 'com.facebook.react:react-native:+'
     implementation "com.google.android.gms:play-services-gcm:$googlePlayServicesVersion"
+    implementation "com.google.android.gms:play-services-ads:$googlePlayServicesVersion"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:support-v4:$supportLibVersion"
     implementation "com.android.support:support-media-compat:$supportLibVersion"
