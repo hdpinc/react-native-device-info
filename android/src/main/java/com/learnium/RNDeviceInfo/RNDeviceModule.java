@@ -49,12 +49,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.lang.Runtime;
 import java.net.NetworkInterface;
-<<<<<<< HEAD
-import java.io.IOException;
-=======
 import java.math.BigInteger;
->>>>>>> master
-
+import java.io.IOException;
 import javax.annotation.Nullable;
 
 public class RNDeviceModule extends ReactContextBaseJavaModule {
@@ -71,17 +67,7 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
     super(reactContext);
 
     this.reactContext = reactContext;
-<<<<<<< HEAD
-
-    mExecutor = Executors.newFixedThreadPool(2, new ThreadFactory() {
-      @Override
-      public Thread newThread(Runnable r) {
-          return new Thread(r, "bodyInfo");
-      }
-    });
-=======
     this.deviceType = getDeviceType(reactContext);
->>>>>>> master
   }
 
   @Override
@@ -291,26 +277,6 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-<<<<<<< HEAD
-  public void getSafeAndroidAdId(final Promise p) {
-    mExecutor.execute(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          AdvertisingIdClient.Info info = AdvertisingIdClient.getAdvertisingIdInfo(reactContext.getApplicationContext());
-          String advertisingId = info.getId();
-          if (!TextUtils.isEmpty(advertisingId)) {
-            p.resolve(advertisingId);
-            return;
-          }
-        } catch (GooglePlayServicesNotAvailableException
-                | GooglePlayServicesRepairableException
-                | IOException e) {
-        }
-        p.resolve(UUID.randomUUID().toString());
-      }
-    });
-=======
   public void isAirPlaneMode(Promise p) {
     boolean isAirPlaneMode;
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -341,8 +307,27 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
       isAutoTimeZone = Settings.Global.getInt(this.reactContext.getContentResolver(),Settings.Global.AUTO_TIME_ZONE, 0) != 0;
     }
     p.resolve(isAutoTimeZone);
->>>>>>> master
   }
+  
+  @ReactMethod
+  public void getSafeAndroidAdId(final Promise p) {
+    mExecutor.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          AdvertisingIdClient.Info info = AdvertisingIdClient.getAdvertisingIdInfo(reactContext.getApplicationContext());
+          String advertisingId = info.getId();
+          if (!TextUtils.isEmpty(advertisingId)) {
+            p.resolve(advertisingId);
+            return;
+          }
+        } catch (GooglePlayServicesNotAvailableException
+                | GooglePlayServicesRepairableException
+                | IOException e) {
+        }
+        p.resolve(UUID.randomUUID().toString());
+      }
+    });
 
   public String getInstallReferrer() {
     SharedPreferences sharedPref = getReactApplicationContext().getSharedPreferences("react-native-device-info", Context.MODE_PRIVATE);
