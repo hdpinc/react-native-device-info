@@ -47,7 +47,7 @@ rnpm link react-native-device-info
 ### Manual
 
 <details>
-    <summary>iOS (via Cocoa Pods)</summary>
+    <summary>iOS (via CocoaPods)</summary>
 
 Add the following line to your build targets in your `Podfile`
 
@@ -58,7 +58,7 @@ Then run `pod install`
 </details>
 
 <details>
-    <summary>iOS (without Cocoa Pods)</summary>
+    <summary>iOS (without CocoaPods)</summary>
 
 In XCode, in the project navigator:
 
@@ -102,8 +102,8 @@ Run your project (Cmd+R)
 ```diff
 dependencies {
     ...
-    compile "com.facebook.react:react-native:+"  // From node_modules
-+   compile project(':react-native-device-info')
+    implementation "com.facebook.react:react-native:+"  // From node_modules
++   implementation project(':react-native-device-info')
 }
 ```
 
@@ -158,6 +158,19 @@ include ':app'
   }
 ```
 
+NOTE: If you faced with this error: `Could not resolve all files for configuration ':react-native-device-info:debugCompileClasspath'.`, in `build.gradle` put `google()` in the first line (according to https://stackoverflow.com/a/50748249)
+
+* in `android/build.gradle`:
+
+```diff
+allprojects {
+    repositories {
++       google()
+        ...
+    }
+}
+```
+
 (Thanks to @chirag04 for writing the instructions)
 
 </details>
@@ -189,8 +202,7 @@ include ':app'
 ## Usage
 
 ```js
-var DeviceInfo = require('react-native-device-info');
-// or import DeviceInfo from 'react-native-device-info';
+import DeviceInfo from 'react-native-device-info';
 ```
 
 ## API
@@ -211,11 +223,11 @@ var DeviceInfo = require('react-native-device-info');
 | [getFirstInstallTime()](#getfirstinstalltime)     | `number`            |  ❌  |   ✅    |   ✅    | 0.12.0 |
 | [getFontScale()](#getfontscale)                   | `number`            |  ✅  |   ✅    |   ❌    | 0.15.0 |
 | [getFreeDiskStorage()](#getfreediskstorage)       | `number`            |  ✅  |   ✅    |   ❌    | 0.15.0 |
-| [getIPAddress()](#getipaddress)                   | `Promise<string>`   |  ❌  |   ✅    |   ✅    | 0.12.0 |
+| [getIPAddress()](#getipaddress)                   | `Promise<string>`   |  ✅  |   ✅    |   ✅    | 0.12.0 |
 | [getInstallReferrer()](#getinstallreferrer)       | `string`            |  ❌  |   ✅    |   ❌    | 0.19.0 |
 | [getInstanceID()](#getinstanceid)                 | `string`            |  ❌  |   ✅    |   ❌    | ?      |
 | [getLastUpdateTime()](#getlastupdatetime)         | `number`            |  ❌  |   ✅    |   ❌    | 0.12.0 |
-| [getMACAddress()](#getmacaddress)                 | `Promise<string>`   |  ❌  |   ✅    |   ❌    | 0.12.0 |
+| [getMACAddress()](#getmacaddress)                 | `Promise<string>`   |  ✅  |   ✅    |   ❌    | 0.12.0 |
 | [getManufacturer()](#getmanufacturer)             | `string`            |  ✅  |   ✅    |   ✅    | ?      |
 | [getMaxMemory()](#getmaxmemory)                   | `number`            |  ❌  |   ✅    |   ✅    | 0.14.0 |
 | [getModel()](#getmodel)                           | `string`            |  ✅  |   ✅    |   ✅    | ?      |
@@ -231,9 +243,17 @@ var DeviceInfo = require('react-native-device-info');
 | [getUserAgent()](#getuseragent)                   | `string`            |  ✅  |   ✅    |   ❌    | 0.7.0  |
 | [getVersion()](#getversion)                       | `string`            |  ✅  |   ✅    |   ✅    | ?      |
 | [is24Hour()](#is24hour)                           | `boolean`           |  ✅  |   ✅    |   ✅    | 0.13.0 |
+| [isAirPlaneMode()](#isairplanemode)               | `Promise<boolean>`  |  ❌  |   ✅    |   ❌    | 0.25.0 |
+| [isBatteryCharging()](#isbatterycharging)         | `Promise<boolean>`  |  ❌  |   ✅    |   ❌    | 0.27.0 |
 | [isEmulator()](#isemulator)                       | `boolean`           |  ✅  |   ✅    |   ✅    | ?      |
 | [isPinOrFingerprintSet()](#ispinorfingerprintset) | (callback)`boolean` |  ✅  |   ✅    |   ✅    | 0.10.1 |
 | [isTablet()](#istablet)                           | `boolean`           |  ✅  |   ✅    |   ✅    | ?      |
+| [hasNotch()](#hasNotch)                           | `boolean`           |  ✅  |   ✅    |   ✅    | 0.23.0 |
+| [isLandscape()](#isLandscape)                     | `boolean`           |  ✅  |   ✅    |   ✅    | 0.24.0 |
+| [getDeviceType()](#getDeviceType)                 | `string`            |  ✅  |   ✅    |   ❌    | ?      |
+| [isAutoDateAndTime()](#isAutoDateAndTime)         | `boolean`           |  ❌  |   ✅    |   ❌    | 0.29.0 |
+| [isAutoTimeZone()](#isAutoTimeZone)               | `boolean`           |  ❌  |   ✅    |   ❌    | 0.29.0 |
+| [supportedABIs()](#supportedABIs)                 | `string[]`          |  ✅  |   ✅    |   ❌    | 1.1.0  |
 
 ---
 
@@ -283,6 +303,15 @@ DeviceInfo.getBatteryLevel().then(batteryLevel => {
 
 **Notes**
 
+> To be able to get actual battery level enable battery monitoring mode for application.
+> Add this code:
+
+```objective-c
+[UIDevice currentDevice].batteryMonitoringEnabled = true;
+```
+
+> to AppDelegate.m application:didFinishLaunchingWithOptions:
+>
 > Returns -1 on the iOS Simulator
 
 ---
@@ -482,6 +511,10 @@ DeviceInfo.getIPAddress().then(ip => {
 
 * [android.permission.ACCESS_WIFI_STATE](https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_WIFI_STATE)
 
+**Notes**
+
+> Support for iOS was added in 0.22.0
+
 ---
 
 ### getInstallReferrer()
@@ -546,6 +579,10 @@ DeviceInfo.getMACAddress().then(mac => {
 **Android Permissions**
 
 * [android.permission.ACCESS_WIFI_STATE](https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_WIFI_STATE)
+
+**Notes**
+
+> iOS: This method always return "02:00:00:00:00:00" as retrieving the MAC address is [disabled since iOS 7](https://developer.apple.com/library/archive/releasenotes/General/WhatsNewIniOS/Articles/iOS7.html#//apple_ref/doc/uid/TP40013162-SW34)
 
 ---
 
@@ -656,7 +693,7 @@ Gets the device OS name.
 ```js
 const systemName = DeviceInfo.getSystemName();
 
-// iOS: "iOS"
+// iOS: "iOS" on newer iOS devices "iPhone OS" on older devices, including older iPad's.
 // Android: "Android"
 // Windows: ?
 ```
@@ -765,7 +802,7 @@ Gets the application version.
 const version = DeviceInfo.getVersion();
 
 // iOS: "1.0"
-// Android: "1.0
+// Android: "1.0"
 // Windows: ?
 ```
 
@@ -779,6 +816,38 @@ Tells if the user preference is set to 24-hour format.
 
 ```js
 const is24Hour = DeviceInfo.is24Hour(); // true
+```
+
+---
+
+### isAirPlaneMode()
+
+Tells if the device is in AirPlaneMode.
+
+**Examples**
+
+```js
+DeviceInfo.isAirPlaneMode().then(airPlaneModeOn => {
+  // false
+});
+```
+
+**Notes**
+
+> * This only works if the remote debugger is disabled.
+
+---
+
+### isBatteryCharging()
+
+Tells if the battery is currently charging.
+
+**Examples**
+
+```js
+DeviceInfo.isBatteryCharging().then(isCharging => {
+  // true or false
+});
 ```
 
 ---
@@ -826,6 +895,75 @@ Tells if the device is a tablet.
 const isTablet = DeviceInfo.isTablet(); // true
 ```
 
+---
+
+### isLandscape()
+
+Tells if the device is currently in landscape mode.
+
+**Examples**
+
+```js
+const isLandscape = DeviceInfo.isLandscape(); // true
+```
+
+### hasNotch()
+
+Tells if the device has a notch.
+
+**Examples**
+
+```js
+const hasNotch = DeviceInfo.hasNotch(); // true
+```
+
+### getDeviceType()
+
+Returns the device's type as a string, which will be one of:
+
+* `Handset`
+* `Tablet`
+* `Tv`
+* `Unknown`
+
+**Examples**
+
+```js
+const deviceType = DeviceInfo.getDeviceType(); // 'Handset'
+```
+
+### isAutoDateAndTime()
+
+Tells if the automatic date & time setting is enabled on the phone.
+
+**Examples**
+
+```js
+DeviceInfo.isAutoDateAndTime().then(isAutoDateAndTime => {
+  // true or false
+});
+```
+
+### isAutoTimeZone()
+
+Tells if the automatic time zone setting is enabled on the phone.
+
+**Examples**
+
+```js
+DeviceInfo.isAutoTimeZone().then(isAutoTimeZone => {
+  // true or false
+});
+```
+
+### supportedABIs()
+
+Returns a list of supported processor architecture version
+
+```js
+DeviceInfo.supportedABIs(); // [ "arm64 v8", "Intel x86-64h Haswell", "arm64-v8a", "armeabi-v7a", "armeabi" ]
+```
+
 ## Troubleshooting
 
 When installing or using `react-native-device-info`, you may encounter the following problems:
@@ -859,6 +997,18 @@ Seems to be a bug caused by `react-native link`. You can manually delete `libRND
 </details>
 
 <details>
+  <summary>[ios] - [NetworkInfo] Descriptors query returned error: Error Domain=NSCocoaErrorDomain Code=4099
+ “The connection to service named com.apple.commcenter.coretelephony.xpc was invalidated.”</summary>
+
+This is a system level log that may be turned off by executing: 
+```xcrun simctl spawn booted log config --mode "level:off"  --subsystem com.apple.CoreTelephony```. 
+To undo the command, you can execute: 
+```xcrun simctl spawn booted log config --mode "level:info"  --subsystem com.apple.CoreTelephony```
+
+</details>
+
+
+<details>
   <summary>[tests] - Cannot run my test suite when using this library</summary>
 
 `react-native-device-info` contains native code, and needs to be mocked.
@@ -885,7 +1035,7 @@ jest.mock('react-native-device-info', () => {
 
 ## Release Notes
 
-See the [CHANGELOG.md](https://github.com/rebeccahughes/react-native-device-info/blob/master/CHANGELOG.md).
+See the [CHANGELOG.md](https://github.com/react-native-community/react-native-device-info/blob/master/CHANGELOG.md).
 
 ## react-native-web
 
