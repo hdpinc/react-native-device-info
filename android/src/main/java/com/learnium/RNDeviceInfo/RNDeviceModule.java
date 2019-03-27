@@ -308,7 +308,7 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
     }
     p.resolve(isAutoTimeZone);
   }
-  
+
   @ReactMethod
   public void getSafeAndroidAdId(final Promise p) {
     mExecutor.execute(new Runnable() {
@@ -328,6 +328,7 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
         p.resolve(UUID.randomUUID().toString());
       }
     });
+  }
 
   public String getInstallReferrer() {
     SharedPreferences sharedPref = getReactApplicationContext().getSharedPreferences("react-native-device-info", Context.MODE_PRIVATE);
