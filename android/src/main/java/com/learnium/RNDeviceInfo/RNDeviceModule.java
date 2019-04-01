@@ -57,7 +57,7 @@ public class RNDeviceModule extends ReactContextBaseJavaModule {
 
   ReactApplicationContext reactContext;
 
-  Executor mExecutor;
+  Executor mExecutor = Executors.newSingleThreadExecutor();
 
   WifiInfo wifiInfo;
 
