@@ -5,8 +5,8 @@ import { Platform, NativeModules, Dimensions } from 'react-native';
 
 var RNDeviceInfo = NativeModules.RNDeviceInfo;
 
-if (!RNDeviceInfo && Platform.OS === 'web') {
-  RNDeviceInfo = require('./web');
+if (!RNDeviceInfo) {
+  RNDeviceInfo = (Platform.OS === 'web' || Platform.OS === 'dom') ? require('./web') : require('./default');
 }
 
 const devicesWithNotch = [
@@ -117,6 +117,10 @@ const devicesWithNotch = [
   {
     brand: 'OnePlus',
     model: 'OnePlus A6003',
+  },
+  {
+    brand: 'OnePlus',
+    model: 'ONEPLUS A6010',
   },
   {
     brand: 'OnePlus',
@@ -253,6 +257,9 @@ export default {
   getDeviceLocale: function() {
     return RNDeviceInfo.deviceLocale;
   },
+  getPreferredLocales: function() {
+    return RNDeviceInfo.preferredLocales;
+  },
   getDeviceCountry: function() {
     return RNDeviceInfo.deviceCountry;
   },
@@ -306,6 +313,9 @@ export default {
   },
   getBatteryLevel: function() {
     return RNDeviceInfo.getBatteryLevel();
+  },
+  getPowerState: function() {
+    return RNDeviceInfo.getPowerState();
   },
   isBatteryCharging: function() {
     return RNDeviceInfo.isBatteryCharging();

@@ -1,5 +1,18 @@
 ## Release Notes
 
+### 1.4.0
+ * feat: add battery monitoring and detailed power state getter (https://github.com/react-native-community/react-native-device-info/pull/436)
+
+### 1.3.0
+ * feat: Add support for preferred languages function (https://github.com/react-native-community/react-native-device-info/pull/610)
+
+### 1.2.0
+ * feat: Support 'dom' Platform.OS for react-native-dom (https://github.com/react-native-community/react-native-device-info/pull/406)
+ * feat: Add support for jest snapshot testing (https://github.com/react-native-community/react-native-device-info/pull/375)
+ * fix: Use API-specific permissions to get phone number (https://github.com/react-native-community/react-native-device-info/pull/269)
+ * fix: Add OnePlus A6010 to devicesWithNothc list (https://github.com/react-native-community/react-native-device-info/pull/604)
+ * fix: use reactContext vs getApplicationContext() (https://github.com/react-native-community/react-native-device-info/pull/382)
+ * fix: dynamic reference path on windows depending on environment (https://github.com/react-native-community/react-native-device-info/pull/608)
 
 ### 1.1.0
  * Add `supportedABIs()` (https://github.com/react-native-community/react-native-device-info/pull/598)
